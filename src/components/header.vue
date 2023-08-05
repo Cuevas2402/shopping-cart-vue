@@ -3,26 +3,24 @@
     import { computed, ref } from 'vue';
 
 
-    const cantidad = ref(1);
-
     const props = defineProps({
         carrito : {
             type: Array,
             required:true
+        },
+        guitar : {
+            type: Object,
+            required: true
         }
     })
     
-    const aumentar = () => {
-        cantidad.value++;
-    }
-
-    const decrementar = () => {
-        cantidad.value--;
-    }
+    
     
     const total = computed( () => {
         return props.carrito.reduce( (total, producto) => total + (producto.cantidad * producto.precio), 0);
     })
+
+    defineEmits(['aumentar', 'decrementar', 'eliminar', 'vaciar']);
 </script>
 
 
@@ -68,24 +66,26 @@
                                                 <button
                                                     type="button"
                                                     class="btn btn-dark"
-                                                    v-on:click="decrementar"
+                                                    @click="$emit('decrementar', opcion.id)"
                                                 >
                                                     -
                                                 </button>
-                                                    {{  cantidad }}
+                                                    {{  opcion.cantidad }}
                                                 <button
                                                     type="button"
                                                     class="btn btn-dark"
-                                                    v-on:click="aumentar"
+                                                    @click="$emit('aumentar', opcion.id)"
                                                 >
                                                     +
                                                 </button>
                                             </td>
                                             <td>
                                                 <button
-                                                    v-on:click="eliminar(guitarra)"
+                                                    
                                                     class="btn btn-danger"
                                                     type="button"
+
+                                                    @click ="$emit('eliminar', opcion.id)"
                                                 >
                                                     X
                                                 </button>
@@ -95,7 +95,7 @@
                                 </table>
 
                                 <p class="text-end">Total pagar: <span class="fw-bold">$ {{ total  }}</span></p>
-                                <button class="btn btn-dark w-100 mt-3 p-2">Vaciar Carrito</button>
+                                <button class="btn btn-dark w-100 mt-3 p-2" @click="$emit('vaciar')">Vaciar Carrito</button>
                             </div>
                         </div>
                     </div>
@@ -104,9 +104,9 @@
 
             <div class="row mt-5">
                 <div class="col-md-6 text-center text-md-start pt-5">
-                    <h1 class="display-2 fw-bold">Modelo VAI</h1>
-                    <p class="mt-5 fs-5 text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus, possimus quibusdam dolor nemo velit quo, fuga omnis, iure molestias optio tempore sint at ipsa dolorum odio exercitationem eos inventore odit.</p>
-                    <p class="text-primary fs-1 fw-black">$399</p>
+                    <h1 class="display-2 fw-bold">{{guitar.nombre}}</h1>
+                    <p class="mt-5 fs-5 text-white">{{guitar.descripcion}}</p>
+                    <p class="text-primary fs-1 fw-black">$ {{ guitar.precio }}</p>
                     <button 
                         type="button"
                         class="btn fs-4 bg-primary text-white py-2 px-5"

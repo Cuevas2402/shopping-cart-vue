@@ -10,29 +10,53 @@
     const carrito = ref([]);
 
 	const guitarras = ref(db);
+
+    const guitar = ref({});
 	//console.table(guitarras.value[0].id);
 	onMounted(() => { 
 		guitarras.value = db;
 		state.guitarras = db;
+        guitar.value = db[2];
 	})
 
 
     const incrementar = (guitarra) => { 
         const existe = carrito.value.findIndex(producto => producto.id === guitarra.id);
-        if(existe){
+        
+        if(existe >= 0) {
+            carrito.value[existe].cantidad++;
+        } else {
+            guitarra.cantidad = 1;
             carrito.value.push(guitarra);
         }
         
     }
 
-    
+    const aumentar = (id) => {
+        const index = carrito.value.findIndex(producto => producto.id === id);
+        carrito.value[index].cantidad++;
+    }
+
+    const decrementar = (id) => {
+        const index = carrito.value.findIndex(producto => producto.id === id); // Sirve para encontrar el prodcuto 
+        carrito.value[index].cantidad--;
+        
+    }
+
+    const eliminar = (id) => {
+        carrito.value = carrito.value.filter( product => product.id !== id); //Sirve para filtrar el los valores y solo traerte los que cumplent con la condicion
+    }
+
+    const vaciar = () => {
+        carrito.value = [];
+    }
 
     
 
 </script>
 
 <template>
-    <Header v-bind:carrito="carrito"></Header>
+    <Header v-bind:carrito="carrito" v-bind:guitar="guitar" @aumentar="aumentar" @decrementar="decrementar" @eliminar="eliminar" @vaciar = "vaciar"></Header>
 
     <main class="container-xl mt-5">
         <h2 class="text-center">Nuestra Colección</h2>
